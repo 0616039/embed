@@ -8,10 +8,28 @@ a.	讀取opencv原始的haarcascade_frontalface_default.xml使用cv2.CascadeClas
 b.	在螢幕前拍攝我們各自的人像，當偵測出人臉會自動轉為灰階並存取在dataset，每人各為100張臉的data，並進行編號，在這邊Ivy為1，Tiffany為2
 ### 2. Trainning
 a.	使用LBPHFaceRecognizer為recongnizer 
+
 ```python 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 ```
+
 b.	對dataset中的人臉依照編號，建立每張圖片的id
+```python!
+def getImagesAndLabels(path):
+    imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
+    faceSamples=[]
+    ids = []
+    for imagePath in imagePaths:
+        PIL_img = Image.open(imagePath).convert('L') # convert it to grayscale
+        img_numpy = np.array(PIL_img,'uint8')
+        id = int(os.path.split(imagePath)[-1].split(".")[1])
+        faces = detector.detectMultiScale(img_numpy)
+        for (x,y,w,h) in faces:
+            faceSamples.append(img_numpy[y:y+h,x:x+w])
+            ids.append(id)
+    return faceSamples,ids
+```
+
 c.	用recognizer train 並把 model存在trainer.yml中
 ### 3. Recognition
 這是本次實驗要跑在板子上的部份，因此用C++寫
