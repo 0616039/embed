@@ -14,7 +14,7 @@ recognizer = cv2.face.LBPHFaceRecognizer_create()
 ```
 
 b.	對dataset中的人臉依照編號，建立每張圖片的id
-```python!
+```python
 def getImagesAndLabels(path):
     imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
     faceSamples=[]
